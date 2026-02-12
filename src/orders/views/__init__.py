@@ -1,2 +1,3 @@
 from .customer import CustomerViewSet
-from .loan_proposal import LoanProposalViewSet
+from .product import ProductViewSet
+from .order import OrderViewSet
