@@ -1,4 +1,4 @@
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from rest_framework import serializers
 from orders.models import Order, OrderItem, Customer, Product, OrderStatusHistory
 from .customer import CustomerSerializer
@@ -53,11 +53,15 @@ class OrderSerializer(serializers.ModelSerializer):
                 return existing
 
         with transaction.atomic():
-            order = Order.objects.create(**validated_data, idempotency_key=idempotency_key)
+            try:
+                order = Order.objects.create(**validated_data, idempotency_key=idempotency_key)
+            except IntegrityError:
+                return Order.objects.get(idempotency_key=idempotency_key)
 
             total_value = 0
             for item_data in items_data:
-                product = item_data["product"]
+                # Corrigido: acessar o objeto product corretamente
+                product = Product.objects.select_for_update().get(pk=item_data["product"].id)
                 quantity = item_data["quantity"]
 
                 if product.status != "ACTIVE":
@@ -116,8 +120,6 @@ class OrderSerializer(serializers.ModelSerializer):
                     changed_by=self.context["request"].user if self.context.get("request") else None,
                     notes=validated_data.get("notes", "")
                 )
-
-
 
             for attr, value in validated_data.items():
                 setattr(instance, attr, value)
