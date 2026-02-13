@@ -5,7 +5,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from orders.models import Order
+from orders.models import Order, OrderStatusHistory
 from orders.serializers import OrderSerializer
 
 logger = logging.getLogger(__name__)
@@ -42,6 +42,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         try:
             order = self.get_object()
+            previous_status = order.status
 
             serializer = self.get_serializer(
                 order,
@@ -51,6 +52,18 @@ class OrderViewSet(viewsets.ModelViewSet):
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
+
+            # Cria histórico de status
+            new_status = serializer.validated_data.get("status", order.status)
+            history = OrderStatusHistory(
+                order=order,
+                previous_status=previous_status,
+                new_status=new_status,
+                notes=request.data.get("notes"),
+            )
+            if request.user.is_authenticated:
+                history.changed_by = request.user
+            history.save()
 
             logger.info(
                 "Order status updated successfully",

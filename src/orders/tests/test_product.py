@@ -39,7 +39,6 @@ def test_list_products():
     response = client.get(reverse("product-list"))
 
     assert response.status_code == 200
-    # Ajuste para paginação
     assert response.data["count"] == 2
     assert len(response.data["results"]) == 2
     assert response.data["results"][0]["sku"] in ["SKU1", "SKU2"]

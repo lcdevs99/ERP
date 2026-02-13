@@ -10,8 +10,7 @@ def order_status_changed(sender, instance, created, **kwargs):
             "order_status_changed",
             {
                 "order_id": instance.order.id,
-                "new_status": instance.status,
+                "new_status": instance.new_status,  # ajuste aqui
                 "changed_at": instance.changed_at.isoformat(),
             },
         )
-
