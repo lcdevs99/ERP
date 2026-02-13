@@ -4,7 +4,7 @@ from .product import ProductSerializer
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product_id = serializers.PrimaryKeyRelatedField(
-        queryset=Product.objects.filter(status="ACTIVE"),  # só produtos ativos
+        queryset=Product.objects.filter(status="ACTIVE"),
         source="product",
         write_only=True
     )

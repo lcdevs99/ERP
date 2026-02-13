@@ -8,6 +8,14 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+    # Soft delete
+    def perform_destroy(self, instance):
+        instance.soft_delete()
+
+    # Filtros e ordenação
+    filterset_fields = ["status", "sku"]
+    ordering_fields = ["price", "stock", "name"]
+
     @action(detail=True, methods=["patch"], url_path="stock")
     def update_stock(self, request, pk=None):
         product = self.get_object()

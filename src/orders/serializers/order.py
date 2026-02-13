@@ -60,7 +60,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
             total_value = 0
             for item_data in items_data:
-                # Corrigido: acessar o objeto product corretamente
                 product = Product.objects.select_for_update().get(pk=item_data["product"].id)
                 quantity = item_data["quantity"]
 
