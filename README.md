@@ -42,6 +42,8 @@ O objetivo é fornecer uma **API REST robusta**, seguindo princípios de arquite
 6. 	Documentação interativa (Swagger):
     http://localhost:8000/api/docs
 
+7. 	health:
+    http://localhost:8000/health
 ## 🗄️ Migrations
 
 Após subir os containers, é necessário aplicar as migrations para criar as tabelas no banco de dados MySQL.
@@ -56,7 +58,7 @@ Após subir os containers, é necessário aplicar as migrations para criar as ta
         docker exec -it erp-web-1 bash
     e rodar os comandos  diretamente lá dentro.
     Porém, o uso de  já executa os comandos no serviço  sem precisar abrir o bash.
-        
+
 ℹ️ Observação
 Este projeto roda totalmente em containers Docker.
 Não é necessário instalar Python, MySQL, Redis ou dependências manualmente na máquina local.
